@@ -5,14 +5,31 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { ErrorComponent } from './components/error/error.component';
+import {HttpClientModule} from "@angular/common/http";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import { SignupComponent } from './components/signup/signup.component';
+import { HomeComponent } from './components/home/home.component';
+import { ProfileComponent } from './components/profile/profile.component';
+import { ShippingCartComponent } from './components/shipping-cart/shipping-cart.component';
+import { CreateListingComponent } from './components/create-listing/create-listing.component';
+import { LoginComponent } from './components/login/login.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavbarComponent,
-    ErrorComponent
+    ErrorComponent,
+    SignupComponent,
+    HomeComponent,
+    ProfileComponent,
+    ShippingCartComponent,
+    CreateListingComponent,
+    LoginComponent
   ],
   imports: [
+    HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule,
     BrowserModule,
     AppRoutingModule
   ],
