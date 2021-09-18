@@ -9,5 +9,5 @@ router.register('clients', ClientViewSet)
 router.register('carts', ShippingCartViewSet)
 
 urlpatterns = [
-    path('/', include(router.urls))
+    path('', include(router.urls))
 ]
