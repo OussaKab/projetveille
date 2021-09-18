@@ -9,11 +9,14 @@
       <input type="password" class="form-control" id="password">
     </div>
     <div class="mb-3">
-      <select name="" id="">
-        <option *ngFor="let type of usertypes" [value]="type">{{type}}</option>
+      <label for="type" class="form-label">Type of user</label>
+      <select name="" class="form-select mb-3" id="type">
+        <option *ngFor="let type of ['SELLER', 'CLIENT']" [value]="type">{{type}}</option>
       </select>
     </div>
-    <span class="form-text">Already got an account? <a routerLink="/login">Go to login page</a></span>
-    <button type="submit" class="d-block btn btn-primary" [disabled]="this.form.invalid">Submit</button>
+    <div class="d-flex align-items-center justify-content-end">
+      <span class="form-text">Already got an account? <a routerLink="/login">Go to login page</a></span>
+      <button type="submit" class="ms-auto btn btn-primary" [disabled]="this.form.invalid">Submit</button>
+    </div>
   </form>
 </div>
