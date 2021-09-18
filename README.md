@@ -7,7 +7,8 @@ Pour ce cours, j'ai la tâche de créer un backend Django avec un frontend Angul
 <h1>Étapes à suivres pour la reproduction du projet <code>/django</code></h1>
 <ol>
   <li>Dans un terminal, accédez à la racine du projet <code>/django</code></li>
-  <li>Créez un environnement virtuel ou vous pourrez mettre vos dépendances avec la commande suivante <code>python -m venv venv</code></li>
+  <li>Créez un environnement virtuel ou vous pourrez mettre vos dépendances avec 
+    la commande suivante <code>python -m venv venv</code></li>
   <li>
     <br>
     ->Sur windows <code>venv/Scripts/activate.bat</code>
