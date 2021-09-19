@@ -1,7 +1,5 @@
 from rest_framework import viewsets
 from .serializers import *
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
 
 
 class ProductViewSet(viewsets.ModelViewSet):
