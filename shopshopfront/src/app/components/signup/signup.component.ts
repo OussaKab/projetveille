@@ -21,7 +21,7 @@ export class SignupComponent implements OnInit {
     return new FormGroup({
       username: new FormControl('', [Validators.required, HttpUtilities.noWhitespaceValidator]),
       password: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(30), HttpUtilities.noWhitespaceValidator]),
-      email: new FormControl('', [Validators.required, Validators.email, HttpUtilities.noWhitespaceValidator]),
+      email: new FormControl('', [Validators.required, Validators.email]),
       type: new FormControl('', [Validators.required]),
     });
   }

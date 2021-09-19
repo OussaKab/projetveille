@@ -13,6 +13,7 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { ShippingCartComponent } from './components/shipping-cart/shipping-cart.component';
 import { CreateListingComponent } from './components/create-listing/create-listing.component';
 import { LoginComponent } from './components/login/login.component';
+import { PaymentComponent } from './components/payment/payment.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { LoginComponent } from './components/login/login.component';
     ProfileComponent,
     ShippingCartComponent,
     CreateListingComponent,
-    LoginComponent
+    LoginComponent,
+    PaymentComponent
   ],
   imports: [
     HttpClientModule,

@@ -12,19 +12,13 @@ class ProductViewSet(viewsets.ModelViewSet):
 class ShippingCartViewSet(viewsets.ModelViewSet):
     serializer_class = ShippingCartModelSerializer
     queryset = ShippingCart.objects.all()
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
 
 
 class SellerViewSet(viewsets.ModelViewSet):
     serializer_class = SellerModelSerializer
     queryset = Seller.objects.all()
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
 
 
 class ClientViewSet(viewsets.ModelViewSet):
     serializer_class = ClientModelSerializer
     queryset = Client.objects.all()
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)

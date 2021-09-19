@@ -1,5 +1,6 @@
 from django.urls import path, include
 from rest_framework import routers
+
 from .views import *
 
 router = routers.DefaultRouter()
@@ -9,5 +10,7 @@ router.register('clients', ClientViewSet)
 router.register('carts', ShippingCartViewSet)
 
 urlpatterns = [
-    path('', include(router.urls))
+    path('', include(router.urls)),
+    path('', include('djoser.urls')),
+    path('', include('djoser.urls.authtoken')),
 ]
