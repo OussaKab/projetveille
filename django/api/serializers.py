@@ -1,6 +1,7 @@
-from rest_framework import serializers
-from .models import *
 from PIL import Image
+from rest_framework import serializers
+
+from .models import *
 
 
 class ProductModelSerializer(serializers.ModelSerializer):

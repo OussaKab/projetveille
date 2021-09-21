@@ -15,7 +15,6 @@ urlpatterns = [
     path('create_listing/', create_listing, name='create_listing'),
     path('cart_items/<int:cart_item_pk>/delete/', views.CartItemDeleteView.as_view()),
     path('cart_items/<int:product_pk>/create/', views.CreateCartItemView.as_view())
-    # path('cart_items/add/', views.CreateCartItemView.as_view())
 ]
 
 urlpatterns += router.urls
