@@ -9,10 +9,13 @@ router = routers.DefaultRouter()
 router.register('products', ProductViewSet)
 router.register('users', UserViewSet)
 
+
 urlpatterns = [
     path('auth/', obtain_auth_token, name='login'),
     path('signup/', signup, name='signup'),
     path('create_listing/', create_listing, name='create_listing'),
+    path('cart_items/proceed_to_checkout', checkout_cart, name="proceed_to_checkout"),
+    path('username_exists/<str:username>/', does_user_exist, name="does_user_exist"),
     path('cart_items/<int:cart_item_pk>/delete/', views.CartItemDeleteView.as_view()),
     path('cart_items/<int:product_pk>/create/', views.CreateCartItemView.as_view())
 ]

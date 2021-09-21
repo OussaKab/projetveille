@@ -23,7 +23,7 @@ class Product(models.Model):
                              max_length=80)
     description = models.TextField(blank=False, default=None)
     photo = models.ImageField(upload_to='thumbnails/')
-    price = models.DecimalField(decimal_places=2, max_digits=6)
+    price = models.DecimalField(decimal_places=2, max_digits=30)
     sold = models.BooleanField(default=False)
     created_at = models.DateField(auto_now=True)
     seller = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.CASCADE)

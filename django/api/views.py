@@ -1,3 +1,5 @@
+import rest_framework.exceptions
+from django.contrib.auth import authenticate
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import viewsets, permissions, status, generics
 from rest_framework.authentication import TokenAuthentication
@@ -6,8 +8,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
-from django.contrib.auth import authenticate
-from rest_framework.views import APIView
+
 from .serializers import *
 
 
@@ -21,7 +22,7 @@ class ProductViewSet(viewsets.ModelViewSet):
 class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserModelSerializer
     queryset = ShopShopUser.objects.all()
-    authentication_classes = (TokenAuthentication, )
+    authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
 
@@ -53,7 +54,7 @@ class CreateCartItemView(generics.CreateAPIView):
     serializer_class = CartItemModelSerializer
     queryset = CartItem.objects.all()
     authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
 
     def create(self, request, product_pk=None):
         product = Product.objects.filter(seller=request.user)
@@ -75,8 +76,8 @@ class ProductView(generics.ListAPIView):
 
 class CartItemDeleteView(generics.DestroyAPIView):
     serializer_class = CartItemModelSerializer
-    authentication_classes = (TokenAuthentication, )
-    permission_classes = (permissions.IsAuthenticated, )
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
 
     def destroy(self, request, cart_item_pk=None):
         client_id = Token.objects.get(key=request.auth.key).user_id
@@ -91,6 +92,12 @@ class CartItemDeleteView(generics.DestroyAPIView):
 
 def apply_taxes(subtotal):
     return subtotal * 1.15
+
+
+def get_user(request):
+    user_id = Token.objects.get(key=request.auth.key).user_id
+    user = ShopShopUser.objects.get(id=user_id)
+    return user
 
 
 @csrf_exempt
@@ -116,14 +123,23 @@ def signup(request):
 
 
 @csrf_exempt
+@api_view(['GET', ])
+@permission_classes([AllowAny])
+def does_user_exist(request, username):
+    if username is None or username == '':
+        raise rest_framework.exceptions.APIException('username missing')
+
+    return Response(ShopShopUser.objects.filter(username=username).exists())
+
+
+@csrf_exempt
 @api_view(['POST', ])
 def create_listing(request):
     if request.method == 'POST':
         serializer = ProductModelSerializer(data=request.data)
         data = {}
         if serializer.is_valid():
-            seller_id = Token.objects.get(key=request.auth.key).user_id
-            seller = ShopShopUser.objects.get(id=seller_id)
+            seller = get_user(request)
             product = serializer.save(seller=seller)
             data['id'] = product.id
         else:
@@ -135,8 +151,7 @@ def create_listing(request):
 @api_view(['POST'])
 def checkout_cart(request):
     if request.method == 'POST':
-        client_id = Token.objects.get(key=request.auth.key).user_id
-        client = ShopShopUser.objects.get(id=client_id)
+        client = get_user(request)
         query_set = CartItem.objects.filter(client=client)
         subtotal = 0
         for cart_item in query_set:
@@ -145,4 +160,5 @@ def checkout_cart(request):
             'subtotal': subtotal,
             'total': apply_taxes(subtotal)
         }
+        query_set.delete()
         return Response(data)
