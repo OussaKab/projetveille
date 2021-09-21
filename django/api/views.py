@@ -79,18 +79,25 @@ class CartItemDeleteView(generics.DestroyAPIView):
     permission_classes = (permissions.IsAuthenticated, )
 
     def destroy(self, request, cart_item_pk=None):
-        cart_item = CartItem.objects.filter(client=request.user)
+        client_id = Token.objects.get(key=request.auth.key).user_id
+        client = ShopShopUser.objects.get(id=client_id)
+        cart_item = CartItem.objects.filter(client=client)
         filter_res_cart_item = get_object_or_404(cart_item, pk=cart_item_pk)
         product = get_object_or_404(Product, id=filter_res_cart_item.product.id)
         product.save()
         filter_res_cart_item.delete()
-        return Response(status=status.HTTP_302_FOUND, data={"message": "cart_item deleted"})
+        return Response(status=status.HTTP_302_FOUND, data={"deleted": 'true'})
+
+
+def apply_taxes(subtotal):
+    return subtotal * 1.15
 
 
 @csrf_exempt
 @api_view(['POST', ])
 @permission_classes([AllowAny])
 def signup(request):
+    print(request.user)
     if request.method == 'POST':
         if 'username' not in request.data or 'password' not in request.data:
             raise serializers.ValidationError({'credentials': 'missing credentials for signup processing'})
@@ -115,8 +122,27 @@ def create_listing(request):
         serializer = ProductModelSerializer(data=request.data)
         data = {}
         if serializer.is_valid():
-            product = serializer.save()
+            seller_id = Token.objects.get(key=request.auth.key).user_id
+            seller = ShopShopUser.objects.get(id=seller_id)
+            product = serializer.save(seller=seller)
             data['id'] = product.id
         else:
-            data = serializer.errors
+            data = serializer.errorss
+        return Response(data)
+
+
+@csrf_exempt
+@api_view(['POST'])
+def checkout_cart(request):
+    if request.method == 'POST':
+        client_id = Token.objects.get(key=request.auth.key).user_id
+        client = ShopShopUser.objects.get(id=client_id)
+        query_set = CartItem.objects.filter(client=client)
+        subtotal = 0
+        for cart_item in query_set:
+            subtotal += cart_item.product.price
+        data = {
+            'subtotal': subtotal,
+            'total': apply_taxes(subtotal)
+        }
         return Response(data)

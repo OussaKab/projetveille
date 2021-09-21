@@ -9,13 +9,13 @@ class ProductModelSerializer(serializers.ModelSerializer):
         model = Product
         fields = '__all__'
 
-    def save(self, request):
+    def save(self, seller):
         product = Product(
             title=self.validated_data['title'],
             description=self.validated_data['description'],
             price=float(self.validated_data['price']),
-            photo=Image.open(self.validated_data['photo']),
-            seller=request.user
+            photo=self.validated_data['photo'],
+            seller=seller
         )
         product.save()
         return product
