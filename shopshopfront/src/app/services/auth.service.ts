@@ -9,8 +9,8 @@ import {retry, shareReplay} from 'rxjs/operators';
 import {HttpUtilities} from './http-utilities';
 import {LoginRequest} from '../models/login-request';
 import {UserDTO} from "../models/user-dto";
-
-
+// @ts-ignore
+import * as Swal from 'sweetalert2/dist/sweetalert2.all.js';
 
 @Injectable({
   providedIn: 'root'
@@ -19,16 +19,43 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  login(loginRequest: LoginRequest): Observable<JwtToken>{
-    return this.http.post<JwtToken>(`${environment.authUrl}/login`, JSON.stringify(loginRequest), HttpUtilities.jsonHttpOptions).pipe(
+  errors = [];
+
+  public login(loginCredentials: LoginRequest): void {
+    this.http.post<JwtToken>(`${environment.authUrl}/login`, JSON.stringify(loginCredentials), HttpUtilities.jsonHttpOptions).pipe(
       retry(2),
       shareReplay(1)
+    ).subscribe({
+      next: data => this.storeToken(data.token),
+      error: err => Swal.fire({ text: err.error, icon: 'error'})
+    });
+  }
+
+  public refreshToken(): void {
+    this.http.post(`${environment.authUrl}/token-refresh`, JSON.stringify({token: this.getJwt()}), HttpUtilities.jsonHttpOptions).subscribe(
+      (data:any) => {
+        if(data && data.hasOwnProperty('token')){
+          this.storeToken(data.token)
+        }
+      },
+      err =>  {
+        if(err.hasOwnProperty('error')) {
+          Swal.fire({text: err.error, icon: 'error'})
+        }
+      }
     );
+  }
+
+  private storeToken(token: string) {
+    localStorage.setItem(HttpUtilities.JWT_HEADER, token);
+    const token_parts = token.split(/\./);
+    const token_decoded = JSON.parse(window.atob(token_parts[1]));
   }
 
   public getJwt(): string {
     return localStorage.getItem('token') || "";
   }
+
 
   public getCurrentUser(): UserDTO {
     return <UserDTO>(!this.isLoggedIn() ? null : this.getCitizenDecoded(this.getJwt()));
@@ -37,20 +64,20 @@ export class AuthService {
   private getCitizenDecoded(token: string): UserDTO{
     const decodedToken = HttpUtilities.jwtHelper.decodeToken(token);
 
-    const user: UserDTO = new UserDTO();
-    user.firstName = decodedToken.firstName;
-    user.lastName = decodedToken.lastName;
-    user.email = decodedToken.email;
-    user.username = decodedToken.sub;
-    user.dateJoined = decodedToken.dateJoined;
-    user.lastLogin = decodedToken.lastLogin;
-    user.roles = decodedToken.roles;
-
-    return user;
+    return {
+      firstName: decodedToken.firstName,
+      lastName: decodedToken.lastName,
+      email : decodedToken.email,
+      username: decodedToken.username,
+      dateJoined: decodedToken.dateJoined,
+      lastLogin: decodedToken.lastLogin,
+      roles: decodedToken.roles
+    }
   }
 
   public disconnect(): Subscription{
-    if (localStorage.getItem('token')){
+
+    if (localStorage.getItem('token') !== undefined){
       localStorage.removeItem('token');
     }
 

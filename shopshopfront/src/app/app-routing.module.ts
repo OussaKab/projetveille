@@ -16,7 +16,7 @@ const routes: Routes = [
     component: LoginComponent
   },
   {
-    path: 'create-listing/:token',
+    path: 'create-listing',
     component: CreateListingComponent
   },
   {

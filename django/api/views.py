@@ -8,8 +8,19 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
-
+from django.contrib.auth import logout
 from .serializers import *
+from rest_framework import status
+
+
+def apply_taxes(subtotal):
+    return subtotal * 1.15
+
+
+def get_user(request):
+    user_id = Token.objects.get(key=request.auth.key).user_id
+    user = ShopShopUser.objects.get(id=user_id)
+    return user
 
 
 class ProductViewSet(viewsets.ModelViewSet):
@@ -74,6 +85,17 @@ class ProductView(generics.ListAPIView):
         return Product.objects.filter(seller=self.request.user)
 
 
+class ProductDeleteView(generics.DestroyAPIView):
+    serializer_class = ProductModelSerializer
+    authentication_classes = (TokenAuthentication, )
+    permission_classes = (IsAuthenticated, )
+
+    def destroy(self, request, product_pk=None):
+        product = Product.objects.filter(id=product_pk)
+        product.delete()
+        return Response(status=status.HTTP_202_ACCEPTED, data={"deleted": "true"})
+
+
 class CartItemDeleteView(generics.DestroyAPIView):
     serializer_class = CartItemModelSerializer
     authentication_classes = (TokenAuthentication,)
@@ -87,27 +109,16 @@ class CartItemDeleteView(generics.DestroyAPIView):
         product = get_object_or_404(Product, id=filter_res_cart_item.product.id)
         product.save()
         filter_res_cart_item.delete()
-        return Response(status=status.HTTP_302_FOUND, data={"deleted": 'true'})
-
-
-def apply_taxes(subtotal):
-    return subtotal * 1.15
-
-
-def get_user(request):
-    user_id = Token.objects.get(key=request.auth.key).user_id
-    user = ShopShopUser.objects.get(id=user_id)
-    return user
+        return Response(status=status.HTTP_202_ACCEPTED, data={"deleted": 'true'})
 
 
 @csrf_exempt
 @api_view(['POST', ])
 @permission_classes([AllowAny])
 def signup(request):
-    print(request.user)
     if request.method == 'POST':
         if 'username' not in request.data or 'password' not in request.data:
-            raise serializers.ValidationError({'credentials': 'missing credentials for signup processing'})
+            raise serializers.ValidationError({'error': 'missing credentials for signup processing'})
         user = authenticate(username=request.data['username'], password=request.data['password'])
         data = {'request': request.data}
         if user is None:
@@ -126,10 +137,11 @@ def signup(request):
 @api_view(['GET', ])
 @permission_classes([AllowAny])
 def does_user_exist(request, username):
-    if username is None or username == '':
-        raise rest_framework.exceptions.APIException('username missing')
-
-    return Response(ShopShopUser.objects.filter(username=username).exists())
+    if request.method == 'GET':
+        if username is None or username == '':
+            raise rest_framework.exceptions.APIException('username missing')
+        return Response(ShopShopUser.objects.filter(username=username).exists())
+    return Response({'error': 'something went wrong with the request'}, status=status.HTTP_400_BAD_REQUEST);
 
 
 @csrf_exempt
@@ -145,20 +157,45 @@ def create_listing(request):
         else:
             data = serializer.errorss
         return Response(data)
+    else:
+        return Response({'error':'something went wrong with the request'})
 
 
 @csrf_exempt
 @api_view(['POST'])
-def checkout_cart(request):
+def calculate_cart_totals(request):
     if request.method == 'POST':
         client = get_user(request)
         query_set = CartItem.objects.filter(client=client)
         subtotal = 0
+        data = {}
+        products = []
         for cart_item in query_set:
+            products += {'name': cart_item.product.title, 'price': cart_item.product.price}
             subtotal += cart_item.product.price
-        data = {
+        data += {
             'subtotal': subtotal,
             'total': apply_taxes(subtotal)
         }
-        query_set.delete()
         return Response(data)
+    else:
+        return Response({'error': 'something went wrong with the request'})
+
+
+@csrf_exempt
+@api_view(['POST', ])
+def logout_user(request):
+    data = {'logged_out': 'true'}
+    if request.method == 'POST':
+        logout(request)
+        data['logged_out'] = 'false'
+    return Response(data)
+
+
+@csrf_exempt
+@api_view(['POST', ])
+def add_to_cart(request, title):
+    if request.method == 'POST':
+        product = Product.objects.filter(title=title)
+        item = CartItem.objects.create(client=get_user(request), product=product)
+        return Response({'': ''})
