@@ -17,12 +17,12 @@ import * as Swal from 'sweetalert2/dist/sweetalert2.all.js';
 })
 export class AuthService {
 
-  constructor(private http: HttpClient, private router: Router) {}
+  private url = environment.authUrl;
 
-  errors = [];
+  constructor(private http: HttpClient) {}
 
-  public login(loginCredentials: LoginRequest): void {
-    this.http.post<JwtToken>(`${environment.authUrl}/login`, JSON.stringify(loginCredentials), HttpUtilities.jsonHttpOptions).pipe(
+  public login(loginCredentials: LoginRequest): Subscription{
+    return this.http.post<JwtToken>(`${this.url}/login`, JSON.stringify(loginCredentials), HttpUtilities.jsonHttpOptions).pipe(
       retry(2),
       shareReplay(1)
     ).subscribe({
@@ -31,22 +31,51 @@ export class AuthService {
     });
   }
 
-  public refreshToken(): void {
-    this.http.post(`${environment.authUrl}/token-refresh`, JSON.stringify({token: this.getJwt()}), HttpUtilities.jsonHttpOptions).subscribe(
-      (data:any) => {
-        if(data && data.hasOwnProperty('token')){
-          this.storeToken(data.token)
-        }
-      },
-      err =>  {
-        if(err.hasOwnProperty('error')) {
-          Swal.fire({text: err.error, icon: 'error'})
+  public signup(s: SignupRequest): Subscription{
+    return this.http.post<JwtToken>(`${this.url}/signup`, JSON.stringify(s), HttpUtilities.jsonHttpOptions).pipe(
+      retry(2),
+      shareReplay(1)
+    ).subscribe({
+      next: value => this.storeToken(value.token),
+      error: err => {
+        if(err.hasOwnProperty('error')){
+          Swal.fire({text: err.error + '!', icon: 'error'})
         }
       }
-    );
+    });
   }
 
-  private storeToken(token: string) {
+  public isLoggedIn(): boolean{
+    const token = this.getJwt();
+    return !!token && !HttpUtilities.jwtHelper.isTokenExpired(token);
+  }
+
+  public disconnect(): Subscription{
+    if (localStorage.getItem('token') !== undefined){
+      localStorage.removeItem('token');
+    }
+
+    return this.http.post(`${environment.authUrl}/logoff`, HttpUtilities.jsonHttpOptions).subscribe();
+  }
+
+  public refreshToken(): Subscription {
+    return this.http.post<JwtToken>(
+      `${this.url}/token-refresh`,
+          JSON.stringify({token: this.getJwt()}),
+          HttpUtilities.jsonHttpOptions)
+    .subscribe({
+      next : (data:any) => this.storeToken(data.token),
+      error : err =>  {
+        if(err.hasOwnProperty('error')) {
+          Swal.fire({text: err.error, icon: 'error'})
+        }else{
+          console.error(JSON.stringify(err));
+        }
+      }
+    });
+  }
+
+  private storeToken(token: string): void {
     localStorage.setItem(HttpUtilities.JWT_HEADER, token);
     const token_parts = token.split(/\./);
     const token_decoded = JSON.parse(window.atob(token_parts[1]));
@@ -55,7 +84,6 @@ export class AuthService {
   public getJwt(): string {
     return localStorage.getItem('token') || "";
   }
-
 
   public getCurrentUser(): UserDTO {
     return <UserDTO>(!this.isLoggedIn() ? null : this.getCitizenDecoded(this.getJwt()));
@@ -73,25 +101,5 @@ export class AuthService {
       lastLogin: decodedToken.lastLogin,
       roles: decodedToken.roles
     }
-  }
-
-  public disconnect(): Subscription{
-
-    if (localStorage.getItem('token') !== undefined){
-      localStorage.removeItem('token');
-    }
-
-    return this.http.post(`${environment.authUrl}/logoff`, HttpUtilities.jsonHttpOptions).subscribe();
-  }
-
-  public isLoggedIn(): boolean{
-    const token = this.getJwt();
-    return !!token && !HttpUtilities.jwtHelper.isTokenExpired(token);
-  }
-
-  public signup(s: SignupRequest): Observable<JwtToken>{
-    return this.http.post<JwtToken>(`${environment.authUrl}/signup`, JSON.stringify(s), HttpUtilities.jsonHttpOptions).pipe(
-      retry(2)
-    );
   }
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {DomSanitizer} from "@angular/platform-browser";
 
 @Component({
   selector: 'app-create-listing',
@@ -16,31 +17,48 @@ export class CreateListingComponent implements OnInit {
     name: any
   } | undefined;
 
-  constructor() { }
+  post: {
+    title: string,
+    price: number,
+    description: string
+  } | undefined;
+
+  constructor(private domSanitizer: DomSanitizer) { }
 
   private getForm() : FormGroup{
     return new FormGroup({
       title : new FormControl('',Validators.compose([Validators.required,  Validators.minLength(5)])),
       description : new FormControl('',Validators.compose([Validators.required, Validators.minLength(5)])),
-      price : new FormControl(0, [Validators.required, Validators.min(0)])
+      price : new FormControl(0, [Validators.required, Validators.min(0)]),
+      thumbnail : new FormControl(null, Validators.required)
     });
   }
 
   ngOnInit(): void {
   }
 
-  imagesPreview(event : any) {
-    if (event.target.files && event.target.files[0]) {
-      const reader = new FileReader();
+  imagesPreview(e : any) {
 
-      reader.onload = ( e: any) => {
+
+    let title = this.createListingForm.get('title')?.value as string;
+    let description = this.createListingForm.get('description')?.value as string;
+    let price = this.createListingForm.get('title')?.value as number;
+
+    this.post = {
+      title,
+      description,
+      price
+    };
+
+    if (e.target.files && e.target.files[0]) {
         this.imageFile = {
-          link: e.target.result,
+          link: `${window.URL.createObjectURL(e.target.files[0])}`,
           file: e.target.files[0],
           name: e.target.files[0].name
         };
-      };
-      reader.readAsDataURL(event.target.files[0]);
+        this.imageFile.link = this.domSanitizer.bypassSecurityTrustUrl(this.imageFile.link);
+
+        console.log(this.imageFile);
     }
   }
 

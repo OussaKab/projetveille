@@ -14,6 +14,7 @@ import { ShippingCartComponent } from './components/shipping-cart/shipping-cart.
 import { CreateListingComponent } from './components/create-listing/create-listing.component';
 import { LoginComponent } from './components/login/login.component';
 import { PaymentComponent } from './components/payment/payment.component';
+import {ShopShopInterceptor} from "./services/shop-shop-interceptor.service";
 
 @NgModule({
   declarations: [

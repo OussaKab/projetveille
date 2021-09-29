@@ -1,19 +1,25 @@
-<h2>Create a listing</h2>
-<form action="" [formGroup]="createListingForm">
-  <label for="title">Title</label>
-  <input formControlName="title" type="text" id="title"/>
+<div class="container d-flex px-5 justify-content-center align-items-center">
+  <div>
+    <h2>Create a listing</h2>
+    <form action="" [formGroup]="createListingForm" class="">
+      <label for="title" class="form-label">Title</label>
+      <input formControlName="title" class="form-control" type="text" id="title"/>
 
-  <label for="description">Description</label>
-  <input formControlName="description" type="text" id="description"/>
+      <label for="description" class="form-label">Description</label>
+      <textarea formControlName="description" type="text" class="form-control" id="description"></textarea>
 
-  <label for="price">Price</label>
-  <input formControlName="price" type="number" id="price"/>
+      <label for="price" class="form-label">Price</label>
+      <input formControlName="price" type="number" class="form-control" id="price"/>
 
-  <label for="thumbnail">Choose a thumbnail</label>
-  <input type="file" id="thumbnail" (change)="imagesPreview($event)" formControlName="thumbnail">
-  <button type="submit">Create</button>
-</form>
-
-<div>
-  <h3></h3>
+      <label for="thumbnail" class="form-label">Choose a thumbnail</label>
+      <input type="file" id="thumbnail" class="form-control" accept="image/*" (change)="imagesPreview($event)" formControlName="thumbnail">
+      <button type="submit" class="btn btn-primary w-100 fw-bold">Create</button>
+    </form>
+  </div>
+  <div *ngIf="imageFile && this.post">
+    <h4>{{this.post?.title}}</h4>
+    <img [src]="imageFile.link" alt="">
+    <p>{{this.post?.description}}</p>
+    <p>{{this.post?.price}}</p>
+  </div>
 </div>
