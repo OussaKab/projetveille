@@ -13,26 +13,23 @@ export class CreateListingComponent implements OnInit {
 
   imageFile: {file: any; link: any; name: any} | undefined;
 
-  post: { title: string, price: number, description: string} | undefined;
+  price!: number;
+  description!: string;
+  title!: string;
 
   constructor(private domSanitizer: DomSanitizer) { }
 
   ngOnInit(): void {
     this.createListingForm = new FormGroup({
-      title : new FormControl('',Validators.compose([Validators.required,  Validators.minLength(5)])),
-      description : new FormControl('',Validators.compose([Validators.required, Validators.minLength(5)])),
-      price : new FormControl(0, [Validators.required, Validators.min(0)]),
+      title : new FormControl(this.title,Validators.compose([Validators.required,  Validators.minLength(5)])),
+      description : new FormControl(this.description,Validators.compose([Validators.required, Validators.minLength(5)])),
+      price : new FormControl(this.price, [Validators.required, Validators.min(0)]),
       thumbnail : new FormControl(null, Validators.required)
     });
   }
 
+
   imagesPreview(e : any) {
-    let title = this.createListingForm?.get('title')?.value as string;
-    let description = this.createListingForm?.get('description')?.value as string;
-    let price = this.createListingForm?.get('price')?.value as number;
-
-    this.post = {title, description, price};
-
     if (e.target.files && e.target.files[0]) {
         this.imageFile = {
           link: this.domSanitizer.bypassSecurityTrustUrl(window.URL.createObjectURL(e.target.files[0])),

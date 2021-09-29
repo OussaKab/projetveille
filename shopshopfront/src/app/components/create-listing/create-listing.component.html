@@ -4,24 +4,24 @@
       <h2>Create a listing</h2>
       <form action="" [formGroup]="createListingForm" class="">
         <label for="title" class="form-label">Title</label>
-        <input formControlName="title" class="form-control" (keydown)="imagesPreview($event)" type="text" id="title"/>
+        <input formControlName="title" class="form-control" [(ngModel)]="this.title" type="text" id="title"/>
 
         <label for="description" class="form-label">Description</label>
-        <textarea formControlName="description" type="text" (keydown)="imagesPreview($event)" class="form-control" id="description"></textarea>
+        <textarea formControlName="description" type="text" [(ngModel)]="this.description" class="form-control" id="description"></textarea>
 
         <label for="price" class="form-label">Price</label>
-        <input formControlName="price" type="number" (keydown)="imagesPreview($event)" class="form-control" id="price"/>
+        <input formControlName="price" type="number" [(ngModel)]="this.price" class="form-control" id="price"/>
 
         <label for="thumbnail" class="form-label">Choose a thumbnail</label>
         <input type="file" id="thumbnail" class="form-control" accept="image/*" (change)="imagesPreview($event)" formControlName="thumbnail">
         <button type="submit" class="btn btn-primary w-100 fw-bold">Create</button>
       </form>
     </div>
-    <div class="col" *ngIf="imageFile && this.post">
-      <h3>{{this.post.title}}</h3>
-      <img [src]="imageFile.link" alt="">
-      <p>{{this.post.description}}</p>
-      <p>{{this.post.price}}$</p>
+    <div class="col">
+      <h3>{{(this.title ? this.title : 'Enter a title') | titlecase}}</h3>
+      <img [src]="imageFile?.link ? imageFile?.link : 'https://github.com/oussakab.png'" [alt]="imageFile?.name" class="img-thumbnail">
+      <h6 class="text-muted">{{this.description ? this.description : 'Enter a description'}}</h6>
+      <h2>{{(this.price ? this.price : 0) | currency:'CAD':'symbol'}}</h2>
     </div>
   </div>
 </div>
