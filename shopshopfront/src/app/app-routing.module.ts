@@ -5,6 +5,7 @@ import {ErrorComponent} from "./components/error/error.component";
 import {HomeComponent} from "./components/home/home.component";
 import {CreateListingComponent} from "./components/create-listing/create-listing.component";
 import {LoginComponent} from "./components/login/login.component";
+import {ShippingCartComponent} from "./components/cart/shipping-cart.component";
 
 const routes: Routes = [
   {
@@ -26,6 +27,10 @@ const routes: Routes = [
   {
     path: 'home',
     component: HomeComponent
+  },
+  {
+    path: 'cart',
+    component: ShippingCartComponent
   },
   {
     path: '',

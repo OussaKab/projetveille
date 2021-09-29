@@ -10,7 +10,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { SignupComponent } from './components/signup/signup.component';
 import { HomeComponent } from './components/home/home.component';
 import { ProfileComponent } from './components/profile/profile.component';
-import { ShippingCartComponent } from './components/shipping-cart/shipping-cart.component';
+import { ShippingCartComponent } from './components/cart/shipping-cart.component';
 import { CreateListingComponent } from './components/create-listing/create-listing.component';
 import { LoginComponent } from './components/login/login.component';
 import { PaymentComponent } from './components/payment/payment.component';

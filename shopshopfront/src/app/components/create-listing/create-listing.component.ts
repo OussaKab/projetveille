@@ -9,24 +9,16 @@ import {DomSanitizer} from "@angular/platform-browser";
 })
 export class CreateListingComponent implements OnInit {
 
-  createListingForm: FormGroup = this.getForm();
+  createListingForm!: FormGroup;
 
-  imageFile: {
-    file: any;
-    link: any;
-    name: any
-  } | undefined;
+  imageFile: {file: any; link: any; name: any} | undefined;
 
-  post: {
-    title: string,
-    price: number,
-    description: string
-  } | undefined;
+  post: { title: string, price: number, description: string} | undefined;
 
   constructor(private domSanitizer: DomSanitizer) { }
 
-  private getForm() : FormGroup{
-    return new FormGroup({
+  ngOnInit(): void {
+    this.createListingForm = new FormGroup({
       title : new FormControl('',Validators.compose([Validators.required,  Validators.minLength(5)])),
       description : new FormControl('',Validators.compose([Validators.required, Validators.minLength(5)])),
       price : new FormControl(0, [Validators.required, Validators.min(0)]),
@@ -34,31 +26,19 @@ export class CreateListingComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
-  }
-
   imagesPreview(e : any) {
+    let title = this.createListingForm?.get('title')?.value as string;
+    let description = this.createListingForm?.get('description')?.value as string;
+    let price = this.createListingForm?.get('price')?.value as number;
 
-
-    let title = this.createListingForm.get('title')?.value as string;
-    let description = this.createListingForm.get('description')?.value as string;
-    let price = this.createListingForm.get('title')?.value as number;
-
-    this.post = {
-      title,
-      description,
-      price
-    };
+    this.post = {title, description, price};
 
     if (e.target.files && e.target.files[0]) {
         this.imageFile = {
-          link: `${window.URL.createObjectURL(e.target.files[0])}`,
+          link: this.domSanitizer.bypassSecurityTrustUrl(window.URL.createObjectURL(e.target.files[0])),
           file: e.target.files[0],
           name: e.target.files[0].name
         };
-        this.imageFile.link = this.domSanitizer.bypassSecurityTrustUrl(this.imageFile.link);
-
-        console.log(this.imageFile);
     }
   }
 

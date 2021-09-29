@@ -1,22 +1,23 @@
 <div class="container">
-  <form [formGroup]="this.form">
+  <form [formGroup]="this.form" *ngIf="this.form">
+    <h2>Create an account</h2>
     <div class="mb-3">
       <label for="username" class="form-label">Username</label>
       <input type="text" class="form-control" id="username">
     </div>
-    <div class="mb-3">
-      <label for="password" class="form-label">Password</label>
-      <input type="password" class="form-control" id="password">
-    </div>
-    <div class="mb-3">
-      <label for="type" class="form-label">Type of user</label>
-      <select name="" class="form-select mb-3" id="type">
-        <option *ngFor="let type of ['SELLER', 'CLIENT']" [value]="type">{{type}}</option>
-      </select>
+    <div class="row mb-3">
+      <div class="col">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" class="form-control" id="password">
+      </div>
+      <div class="col">
+        <label for="password2" class="form-label">Password confirmation</label>
+        <input type="password" class="form-control" id="password2">
+      </div>
     </div>
     <div class="d-flex align-items-center justify-content-end">
       <span class="form-text">Already got an account? <a routerLink="/login">Go to login page</a></span>
-      <button type="submit" class="ms-auto btn btn-primary" [disabled]="this.form.invalid">Submit</button>
+      <button type="submit" class="ms-auto btn btn-primary" [disabled]="this.form.invalid">Create account</button>
     </div>
   </form>
 </div>

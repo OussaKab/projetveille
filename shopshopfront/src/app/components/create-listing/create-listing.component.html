@@ -1,25 +1,27 @@
 <div class="container d-flex px-5 justify-content-center align-items-center">
-  <div>
-    <h2>Create a listing</h2>
-    <form action="" [formGroup]="createListingForm" class="">
-      <label for="title" class="form-label">Title</label>
-      <input formControlName="title" class="form-control" type="text" id="title"/>
+  <div class="row">
+    <div class="col mb-3">
+      <h2>Create a listing</h2>
+      <form action="" [formGroup]="createListingForm" class="">
+        <label for="title" class="form-label">Title</label>
+        <input formControlName="title" class="form-control" (keydown)="imagesPreview($event)" type="text" id="title"/>
 
-      <label for="description" class="form-label">Description</label>
-      <textarea formControlName="description" type="text" class="form-control" id="description"></textarea>
+        <label for="description" class="form-label">Description</label>
+        <textarea formControlName="description" type="text" (keydown)="imagesPreview($event)" class="form-control" id="description"></textarea>
 
-      <label for="price" class="form-label">Price</label>
-      <input formControlName="price" type="number" class="form-control" id="price"/>
+        <label for="price" class="form-label">Price</label>
+        <input formControlName="price" type="number" (keydown)="imagesPreview($event)" class="form-control" id="price"/>
 
-      <label for="thumbnail" class="form-label">Choose a thumbnail</label>
-      <input type="file" id="thumbnail" class="form-control" accept="image/*" (change)="imagesPreview($event)" formControlName="thumbnail">
-      <button type="submit" class="btn btn-primary w-100 fw-bold">Create</button>
-    </form>
-  </div>
-  <div *ngIf="imageFile && this.post">
-    <h4>{{this.post?.title}}</h4>
-    <img [src]="imageFile.link" alt="">
-    <p>{{this.post?.description}}</p>
-    <p>{{this.post?.price}}</p>
+        <label for="thumbnail" class="form-label">Choose a thumbnail</label>
+        <input type="file" id="thumbnail" class="form-control" accept="image/*" (change)="imagesPreview($event)" formControlName="thumbnail">
+        <button type="submit" class="btn btn-primary w-100 fw-bold">Create</button>
+      </form>
+    </div>
+    <div class="col" *ngIf="imageFile && this.post">
+      <h3>{{this.post.title}}</h3>
+      <img [src]="imageFile.link" alt="">
+      <p>{{this.post.description}}</p>
+      <p>{{this.post.price}}$</p>
+    </div>
   </div>
 </div>

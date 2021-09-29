@@ -1,1 +1,17 @@
-<p>login works!</p>
+<div class="container">
+  <form [formGroup]="this.form">
+    <h2>Connect</h2>
+    <div class="mb-3">
+      <label for="username" class="form-label">Username</label>
+      <input type="text" class="form-control" id="username">
+    </div>
+    <div class="mb-3">
+      <label for="password" class="form-label">Password</label>
+      <input type="password" class="form-control" id="password">
+    </div>
+    <div class="d-flex align-items-center justify-content-end">
+      <span class="form-text">Don't have an account? <a routerLink="/signup">Create one!</a></span>
+      <button type="submit" class="ms-auto btn btn-primary" [disabled]="this.form.invalid">Login</button>
+    </div>
+  </form>
+</div>
