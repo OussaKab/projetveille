@@ -1,26 +1,22 @@
-<div class="container d-flex px-5 justify-content-center align-items-center">
+<div class="container-fluid d-flex px-5 justify-content-center align-items-center">
   <div class="row">
     <div class="col mb-3">
-      <h2>Create a listing</h2>
-      <form action="" [formGroup]="createListingForm" class="">
+      <form action="" [formGroup]="createListingForm">
         <label for="title" class="form-label">Title</label>
         <input formControlName="title" class="form-control" [(ngModel)]="this.title" type="text" id="title"/>
-
         <label for="description" class="form-label">Description</label>
         <textarea formControlName="description" type="text" [(ngModel)]="this.description" class="form-control" id="description"></textarea>
-
         <label for="price" class="form-label">Price</label>
         <input formControlName="price" type="number" [(ngModel)]="this.price" class="form-control" id="price"/>
-
         <label for="thumbnail" class="form-label">Choose a thumbnail</label>
         <input type="file" id="thumbnail" class="form-control" accept="image/*" (change)="imagesPreview($event)" formControlName="thumbnail">
-        <button type="submit" class="btn btn-primary w-100 fw-bold">Create</button>
+        <button type="submit" class="btn btn-primary w-100 fw-bold">Create listing</button>
       </form>
     </div>
     <div class="col">
       <h3>{{(this.title ? this.title : 'Enter a title') | titlecase}}</h3>
       <img [src]="imageFile?.link ? imageFile?.link : 'https://github.com/oussakab.png'" [alt]="imageFile?.name" class="img-thumbnail">
-      <h6 class="text-muted">{{this.description ? this.description : 'Enter a description'}}</h6>
+      <h6 class="text-muted text-wrap">{{this.description ? this.description : 'Enter a description'}}</h6>
       <h2>{{(this.price ? this.price : 0) | currency:'CAD':'symbol'}}</h2>
     </div>
   </div>

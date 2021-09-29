@@ -1,13 +1,15 @@
 <header class="p-3 mb-3 border-bottom">
   <div class="container">
     <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-      <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none">
+      <a routerLink="" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none">
         <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"></use></svg>
       </a>
 
       <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-        <li><a href="#" class="navbar-brand border border-secondary rounded nav-link px-3 link-secondary">{{title | titlecase}}</a></li>
-        <li><a href="#" class="nav-link px-2 text-black link-dark">Explore</a></li>
+        <li><a routerLink="home" class="navbar-brand border border-secondary rounded nav-link px-3 link-secondary">{{title}}</a></li>
+        <li><a routerLink="explore" class="nav-link px-2 text-black link-dark">Explore</a></li>
+        <li><a routerLink="create-listing" class="nav-link px-2 text-black link-dark"><span class="badge bg-dark py-2 px-3 rounded-pill">Create a listing</span></a></li>
+        <li><a routerLink="cart" class="nav-link px-2 text-black link-dark"><span class="badge bg-dark py-2 px-3 rounded-pill">My Cart</span></a></li>
       </ul>
 
       <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" [formGroup]="this.searchForm">
@@ -19,9 +21,7 @@
           <img src="https://github.com/oussakab.png" alt="mdo" width="32" height="32" class="rounded-circle">
         </a>
         <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
-          <li><a class="dropdown-item" [routerLink]="['profile', token]">My Profile</a></li>
-          <li><a class="dropdown-item" routerLink="cart">My Cart</a></li>
-          <li><a class="dropdown-item" routerLink="create-listing">Create a listing</a></li>
+          <li><a class="dropdown-item" routerLink="profile">My Profile</a></li>
           <li><hr class="dropdown-divider"></li>
           <li><a class="dropdown-item" href="javascript:void(0)" (click)="this.logoff()">Sign out</a></li>
         </ul>
