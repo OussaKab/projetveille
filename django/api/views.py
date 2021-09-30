@@ -167,7 +167,10 @@ def calculate_cart_totals(request):
         data = {}
         products = []
         for cart_item in query_set:
-            products.append({'name': str(cart_item.product.title), 'price': cart_item.product.price})
+            products.append({
+                'name': str(cart_item.product.title),
+                'price': cart_item.product.price
+            })
             subtotal += cart_item.product.price
         data['subtotal'] = subtotal
         data['total'] = apply_taxes(subtotal)
@@ -175,3 +178,10 @@ def calculate_cart_totals(request):
         return Response(data)
     else:
         return Response({'error': 'something went wrong with the request'})
+
+
+@api_view(['POST', ])
+def clear_cart(request):
+    user = request.user
+    CartItem.objects.filter(client=user).delete()
+    return Response({'message': 'shopping cart cleared!'})

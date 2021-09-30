@@ -49,7 +49,7 @@ export class CreateListingComponent implements OnInit {
     const price = this.createListingForm.get('price')?.value as string;
     const title = this.createListingForm.get('title')?.value as string;
     const description = this.createListingForm.get('price')?.value as string;
-    const seller_id = this.authService.getId().toString();
+    const seller_id = this.authService.getId();
 
     let formData = new FormData();
     formData.append('title', title);

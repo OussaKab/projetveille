@@ -1,22 +1,24 @@
-<div class="container mx-auto">
-  <div *ngIf="this.cartitems.length >= 1; else empty">
-    <h2>Your cart is empty</h2>
+<div class="container mx-auto border border-secondary rounded p-3">
+  <div *ngIf="this.shoppingCart.products.length < 1; else empty">
+    <h2>Looks like your shopping cart is empty...</h2>
   </div>
   <ng-template #empty>
     <ul>
-      <li *ngFor="let cartItem of cartitems">
+      <li *ngFor="let cartItem of shoppingCart.products">
         <div class="d-flex align-items-center justify-content-center">
-          <img [src]="this.resolveUrl(cartItem.product.photo)" [alt]="cartItem.product.title">
           <div class="d-flex flex-column">
-            <h2>{{cartItem.product.title}}</h2>
-            <h2>{{cartItem.product.title}}</h2>
-            <h2>{{cartItem.product.title}}</h2>
+            <h2>{{cartItem.name}}</h2>
+            <h4>{{cartItem.price | currency : 'USD': 'symbol'}}$</h4>
           </div>
         </div>
       </li>
     </ul>
-    <div class="d-flex justify-content-end align-items-center">
-      <button class="text-capitalize btn btn-success rounded px-2 ms-2">checkout</button>
+    <hr>
+    <div class="text-capitalize">
+        <p><span class="fw-bold">subtotal</span> : {{this.shoppingCart.subtotal | currency : 'CAD': 'symbol'}}</p>
+        <p><span class="fw-bold">total</span> : {{this.shoppingCart.total | currency : 'CAD': 'symbol'}} <span class="form-text">(15% taxes included)</span></p>
     </div>
+    <hr>
+    <button class="text-capitalize btn btn-success rounded px-2 ms-auto d-block">checkout</button>
   </ng-template>
 </div>

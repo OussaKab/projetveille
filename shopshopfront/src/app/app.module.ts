@@ -12,7 +12,6 @@ import { HomeComponent } from './components/home/home.component';
 import { ShippingCartComponent } from './components/cart/shipping-cart.component';
 import { CreateListingComponent } from './components/create-listing/create-listing.component';
 import { LoginComponent } from './components/login/login.component';
-import { PaymentComponent } from './components/payment/payment.component';
 import {ShopShopInterceptor} from "./services/shop-shop-interceptor.service";
 import { ProductPreviewComponent } from './components/product-preview/product-preview.component';
 
@@ -26,7 +25,6 @@ import { ProductPreviewComponent } from './components/product-preview/product-pr
     ShippingCartComponent,
     CreateListingComponent,
     LoginComponent,
-    PaymentComponent,
     ProductPreviewComponent
   ],
   imports: [

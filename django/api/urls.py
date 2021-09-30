@@ -17,7 +17,8 @@ urlpatterns = [
     path('username_exists/<str:username>/', does_user_exist, name="does_user_exist"),
     path(r'cart_items/calculate_cart_totals/', calculate_cart_totals, name="proceed_to_checkout"),
     path('cart_items/<int:cart_item_pk>/delete/', views.CartItemDeleteView.as_view(), name="delete_cart_item"),
-    path('cart_items/<str:product_title>/create/', views.CreateCartItemView.as_view(), name="create_cart_item")
+    path('cart_items/<str:product_title>/create/', views.CreateCartItemView.as_view(), name="create_cart_item"),
+    path('cart_items/clear', clear_cart, name="clear_cart")
 ]
 
 urlpatterns += router.urls

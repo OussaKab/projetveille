@@ -1,7 +1,7 @@
-<div class="border border-dark p-2">
-  <p>{{this.title}}</p>
-  <img [src]="this.imageUrl" [alt]="this.title">
-  <p>{{this.description}}</p>
-  <p>{{this.price | currency: 'USD': 'symbol'}}</p>
-  <button type="button" class="btn btn-success" (click)="addToCart(this.product.title)">Add to cart</button>
+<div class="border border-dark p-2 rounded shadow">
+  <h2>{{this.title}}</h2>
+<!--  <img [src]="this.imageUrl" [alt]="this.title">-->
+  <p class="form-text">{{this.description}}</p>
+  <h6>{{this.price | currency: 'USD': 'symbol'}}</h6>
+  <button type="button" class="btn btn-success w-100" (click)="addToCart(this.product.title)">Add to cart</button>
 </div>

@@ -6,6 +6,7 @@ import {HomeComponent} from "./components/home/home.component";
 import {CreateListingComponent} from "./components/create-listing/create-listing.component";
 import {LoginComponent} from "./components/login/login.component";
 import {ShippingCartComponent} from "./components/cart/shipping-cart.component";
+import {AuthGuardService as AuthGuard} from "./services/auth-guard.service";
 
 const routes: Routes = [
   {
@@ -18,19 +19,23 @@ const routes: Routes = [
   },
   {
     path: 'create-listing',
-    component: CreateListingComponent
+    component: CreateListingComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: 'error',
-    component: ErrorComponent
+    component: ErrorComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: 'home',
-    component: HomeComponent
+    component: HomeComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: 'cart',
-    component: ShippingCartComponent
+    component: ShippingCartComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: '',

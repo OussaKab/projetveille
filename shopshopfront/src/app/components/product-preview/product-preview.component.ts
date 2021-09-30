@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Product} from "../../models/product";
-import {DomSanitizer, SafeUrl} from "@angular/platform-browser";
+import {DomSanitizer} from "@angular/platform-browser";
 import {Router} from "@angular/router";
 import {CartItemService} from "../../services/cart-item.service";
 
@@ -17,7 +17,7 @@ export class ProductPreviewComponent implements OnInit {
   price: number = 0;
   title: string ='';
   description : string = '';
-  imageUrl!: SafeUrl;
+  // imageUrl!: SafeUrl;
   imageAlt = '';
 
   constructor(private domSanitizer: DomSanitizer, private router: Router, private cartItemService: CartItemService) { }
@@ -25,7 +25,8 @@ export class ProductPreviewComponent implements OnInit {
   ngOnInit(): void {
     this.price = this.product.price;
     this.title = this.product.title;
-    this.imageUrl = this.domSanitizer.bypassSecurityTrustUrl(window.URL.createObjectURL(this.product.photo));
+
+    // this.imageUrl = this.domSanitizer.bypassSecurityTrustUrl(window.URL.createObjectURL(this.product.photo.stream()));
     this.description = this.product.description;
     this.imageAlt = this.product.title;
   }

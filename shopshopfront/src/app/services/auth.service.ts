@@ -70,9 +70,7 @@ export class AuthService {
     return HttpUtilities.jwtHelper.decodeToken(AuthService.getJwtToken());
   }
 
-  getId(): number {
-    const token_decoded = this.getJwt();
-    console.log(token_decoded);
-    return token_decoded.client_id as number;
+  getId(): string {
+    return this.getJwt().user_id as string;
   }
 }

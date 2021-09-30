@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {AuthService} from "../../services/auth.service";
 import {AppComponent} from "../../app.component";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-navbar',
@@ -12,7 +13,7 @@ export class NavbarComponent implements OnInit {
   token: string | undefined;
   title: string = AppComponent.title;
   searchForm!: FormGroup;
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService, private router: Router) { }
 
   ngOnInit(): void {
     this.token = AuthService.getJwtToken();
@@ -23,5 +24,7 @@ export class NavbarComponent implements OnInit {
 
   logoff(): void {
     this.authService.disconnect()
+    alert('disconnected!')
+    this.router.navigateByUrl('/login');
   }
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {CartItem} from "../../models/cart-item";
 import {DomSanitizer} from "@angular/platform-browser";
+import {CartItemService} from "../../services/cart-item.service";
+import {ShoppingCart} from "../../models/ShoppingCart";
 
 @Component({
   selector: 'app-shipping-cart',
@@ -8,11 +9,16 @@ import {DomSanitizer} from "@angular/platform-browser";
   styleUrls: ['./shipping-cart.component.css']
 })
 export class ShippingCartComponent implements OnInit {
-  cartitems: CartItem[] = [];
+  shoppingCart!: ShoppingCart;
 
-  constructor(private domSanitizer: DomSanitizer) { }
+  constructor(private domSanitizer: DomSanitizer, private cartItemService: CartItemService) { }
 
   ngOnInit(): void {
+    this.cartItemService.getShoppingCart().subscribe({
+      next: cart => this.shoppingCart = cart,
+      error: err => console.error(err),
+      complete: () => console.log('Loaded all cart items!')
+    })
   }
 
   resolveUrl(file: File) {
