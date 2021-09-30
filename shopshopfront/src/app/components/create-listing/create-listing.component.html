@@ -14,10 +14,12 @@
       </form>
     </div>
     <div class="col">
-      <h3>{{(this.title ? this.title : 'Enter a title') | titlecase}}</h3>
       <img [src]="imageFile?.link ? imageFile?.link : 'https://github.com/oussakab.png'" [alt]="imageFile?.name" class="img-thumbnail">
-      <h6 class="text-muted text-wrap">{{this.description ? this.description : 'Enter a description'}}</h6>
-      <h2>{{(this.price ? this.price : 0) | currency:'CAD':'symbol'}}</h2>
+      <div class="text-wrap">
+        <h3 class="text-wrap text-truncate">{{(this.title ? this.title : 'Enter a title') | titlecase}}</h3>
+        <h6 class="text-muted text-wrap">{{this.description ? this.description : 'Enter a description'}}</h6>
+        <h2>{{(this.price ? this.price : 0) | currency:'CAD':'symbol'}}</h2>
+      </div>
     </div>
   </div>
 </div>

@@ -21,6 +21,4 @@ urlpatterns = [
     path('cart_items/<int:product_pk>/create/', views.CreateCartItemView.as_view())
 ]
 
-
-
 urlpatterns += router.urls

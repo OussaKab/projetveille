@@ -1,3 +1,5 @@
+import json
+
 import rest_framework.exceptions
 from django.contrib.auth import authenticate
 from django.contrib.auth import logout
@@ -10,6 +12,8 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.tokens import RefreshToken
+from pprint import pprint
 
 from .serializers import *
 
@@ -19,6 +23,7 @@ def apply_taxes(subtotal):
 
 
 def get_user(request):
+    RefreshToken.for_user(user=ShopShopUser.objects.filter(re))
     user_id = Token.objects.get(key=request.auth.key).user_id
     user = ShopShopUser.objects.get(id=user_id)
     return user
@@ -80,7 +85,7 @@ class CreateCartItemView(generics.CreateAPIView):
 
 class ProductView(generics.ListAPIView):
     serializer_class = ProductModelSerializer
-    authentication_classes = (JWTAuthentication, )
+    authentication_classes = (JWTAuthentication,)
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
@@ -89,8 +94,8 @@ class ProductView(generics.ListAPIView):
 
 class ProductDeleteView(generics.DestroyAPIView):
     serializer_class = ProductModelSerializer
-    authentication_classes = (JWTAuthentication, )
-    permission_classes = (IsAuthenticated, )
+    authentication_classes = (JWTAuthentication,)
+    permission_classes = (IsAuthenticated,)
 
     def destroy(self, request, product_pk=None):
         product = Product.objects.filter(id=product_pk)
@@ -121,18 +126,21 @@ def signup(request):
     if request.method == 'POST':
         if 'username' not in request.data or 'password' not in request.data:
             raise serializers.ValidationError({'error': 'missing credentials for signup processing'})
-        user = authenticate(username=request.data['username'], password=request.data['password'])
-        data = {'request': request.data}
-        if user is None:
+        response = JWTAuthentication().authenticate(request)
+
+        if response is None:
             serializer = UserRegistrationSerializer(data=request.data)
             if serializer.is_valid():
                 user = serializer.save()
-                data['token'] = Token.objects.create(user=user).key
+                refresh = RefreshToken.for_user(user)
+                return Response({'access': str(refresh.access_token), 'refresh': str(refresh)})
             else:
                 data = serializer.errors
             return Response(data)
         else:
-            return Response({'token': Token.objects.get(user=user).key})
+            user, token = response
+            refresh = RefreshToken.for_user(user)
+            return Response({'access': str(refresh.access_token), 'refresh': str(refresh)})
 
 
 @csrf_exempt
@@ -157,14 +165,14 @@ def create_listing(request):
             product = serializer.save(seller=seller)
             data['id'] = product.id
         else:
-            data = serializer.errorss
+            data = serializer.errors
         return Response(data)
     else:
-        return Response({'error':'something went wrong with the request'})
+        return Response({'error': 'something went wrong with the request'})
 
 
 @csrf_exempt
-@api_view(['POST'])
+@api_view(['GET'])
 def calculate_cart_totals(request):
     if request.method == 'POST':
         client = get_user(request)

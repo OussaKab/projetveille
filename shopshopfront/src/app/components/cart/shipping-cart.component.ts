@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {CartItem} from "../../models/cart-item";
+import {DomSanitizer} from "@angular/platform-browser";
 
 @Component({
   selector: 'app-shipping-cart',
@@ -7,11 +8,14 @@ import {CartItem} from "../../models/cart-item";
   styleUrls: ['./shipping-cart.component.css']
 })
 export class ShippingCartComponent implements OnInit {
-  cartitems!: CartItem[];
+  cartitems: CartItem[] = [];
 
-  constructor() { }
+  constructor(private domSanitizer: DomSanitizer) { }
 
   ngOnInit(): void {
   }
 
+  resolveUrl(file: File) {
+    return this.domSanitizer.bypassSecurityTrustUrl(window.URL.createObjectURL(file));
+  }
 }

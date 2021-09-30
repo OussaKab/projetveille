@@ -1,9 +1,7 @@
-import {UserDTO} from "./user-dto";
-
-export class Product{
-  title : string | undefined;
-  description: string | undefined;
-  photo: string | undefined;
-  price: number | undefined;
-  sold: boolean | undefined = false;
+export interface Product{
+  title : string;
+  description: string;
+  photo: File;
+  price: number;
+  sold: boolean;
 }
