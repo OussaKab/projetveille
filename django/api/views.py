@@ -183,5 +183,9 @@ def calculate_cart_totals(request):
 @api_view(['POST', ])
 def clear_cart(request):
     user = request.user
-    CartItem.objects.filter(client=user).delete()
+    query_set = CartItem.objects.filter(client=user)
+    for cartItem in query_set:
+        cartItem.product.sold = True
+        cartItem.product.save()
+        cartItem.delete()
     return Response({'message': 'shopping cart cleared!'})

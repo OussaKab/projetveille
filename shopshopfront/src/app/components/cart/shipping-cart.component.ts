@@ -24,4 +24,13 @@ export class ShippingCartComponent implements OnInit {
   resolveUrl(file: File) {
     return this.domSanitizer.bypassSecurityTrustUrl(window.URL.createObjectURL(file));
   }
+
+  checkout(){
+    alert('Congratulations');
+    this.cartItemService.checkout().subscribe({
+      next: value => {},
+      error: err => console.error(err),
+      complete: () => alert('payed for all items! Congrats!')
+    })
+  }
 }

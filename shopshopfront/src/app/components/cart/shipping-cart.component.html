@@ -1,5 +1,5 @@
 <div class="container mx-auto border border-secondary rounded p-3">
-  <div *ngIf="this.shoppingCart.products.length < 1; else empty">
+  <div *ngIf="this.shoppingCart && this.shoppingCart.products.length < 1; else empty">
     <h2>Looks like your shopping cart is empty...</h2>
   </div>
   <ng-template #empty>
@@ -19,6 +19,6 @@
         <p><span class="fw-bold">total</span> : {{this.shoppingCart.total | currency : 'CAD': 'symbol'}} <span class="form-text">(15% taxes included)</span></p>
     </div>
     <hr>
-    <button class="text-capitalize btn btn-success rounded px-2 ms-auto d-block">checkout</button>
+    <button class="text-capitalize btn btn-success rounded px-2 ms-auto d-block" (click)="checkout()">checkout</button>
   </ng-template>
 </div>

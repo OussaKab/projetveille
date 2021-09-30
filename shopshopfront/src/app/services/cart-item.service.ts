@@ -21,4 +21,8 @@ export class CartItemService {
   getShoppingCart(): Observable<ShoppingCart>{
     return this.http.get<ShoppingCart>(`${this.url}/calculate_cart_totals/`);
   }
+
+  checkout() : Observable<any>{
+    return this.http.post(`${this.url}/clear`, HttpUtilities.jsonHttpOptions);
+  }
 }
