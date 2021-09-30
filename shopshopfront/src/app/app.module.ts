@@ -15,6 +15,7 @@ import { CreateListingComponent } from './components/create-listing/create-listi
 import { LoginComponent } from './components/login/login.component';
 import { PaymentComponent } from './components/payment/payment.component';
 import {ShopShopInterceptor} from "./services/shop-shop-interceptor.service";
+import { ProductPreviewComponent } from './components/product-preview/product-preview.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import {ShopShopInterceptor} from "./services/shop-shop-interceptor.service";
     ShippingCartComponent,
     CreateListingComponent,
     LoginComponent,
-    PaymentComponent
+    PaymentComponent,
+    ProductPreviewComponent
   ],
   imports: [
     HttpClientModule,

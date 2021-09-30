@@ -20,7 +20,7 @@ export namespace HttpUtilities{
   // tslint:disable-next-line:max-line-length triple-equals
   export const REDIRECT_CREDENTIALS = localStorage.getItem('route') !== undefined && localStorage.getItem('route') != '/' && localStorage.getItem('route') != '/credentials' ? localStorage.getItem('route') : '/home';
 
-  export const JWT_HEADER = 'JWT';
+  export const JWT_HEADER = 'Bearer';
 
   export const PASSWORD_VALIDATORS =  [
     HttpUtilities.noWhitespaceValidator,

@@ -1,16 +1,17 @@
 import rest_framework.exceptions
 from django.contrib.auth import authenticate
+from django.contrib.auth import logout
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework import viewsets, permissions, status, generics
-from rest_framework.authentication import TokenAuthentication
+from rest_framework import status
+from rest_framework import viewsets, permissions, generics
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
-from django.contrib.auth import logout
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
 from .serializers import *
-from rest_framework import status
 
 
 def apply_taxes(subtotal):
@@ -26,21 +27,21 @@ def get_user(request):
 class ProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductModelSerializer
     queryset = Product.objects.all()
-    authentication_classes = (TokenAuthentication,)
+    authentication_classes = (JWTAuthentication,)
     permission_classes = (IsAuthenticated,)
 
 
 class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserModelSerializer
     queryset = ShopShopUser.objects.all()
-    authentication_classes = (TokenAuthentication,)
+    authentication_classes = (JWTAuthentication,)
     permission_classes = (IsAuthenticated,)
 
 
 class CreateUserView(generics.CreateAPIView):
     serializer_class = UserRegistrationSerializer
     queryset = ShopShopUser.objects.all()
-    authentication_classes = (TokenAuthentication,)
+    authentication_classes = (JWTAuthentication,)
     permission_classes = (IsAuthenticated,)
 
     def create(self, request):
@@ -57,14 +58,14 @@ class CreateUserView(generics.CreateAPIView):
 class CreateProductView(generics.CreateAPIView):
     serializer_class = ProductModelSerializer
     queryset = Product.objects.all()
-    authentication_classes = (TokenAuthentication,)
+    authentication_classes = (JWTAuthentication,)
     permission_classes = (IsAuthenticated,)
 
 
 class CreateCartItemView(generics.CreateAPIView):
     serializer_class = CartItemModelSerializer
     queryset = CartItem.objects.all()
-    authentication_classes = (TokenAuthentication,)
+    authentication_classes = (JWTAuthentication,)
     permission_classes = (IsAuthenticated,)
 
     def create(self, request, product_pk=None):
@@ -79,6 +80,7 @@ class CreateCartItemView(generics.CreateAPIView):
 
 class ProductView(generics.ListAPIView):
     serializer_class = ProductModelSerializer
+    authentication_classes = (JWTAuthentication, )
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
@@ -87,7 +89,7 @@ class ProductView(generics.ListAPIView):
 
 class ProductDeleteView(generics.DestroyAPIView):
     serializer_class = ProductModelSerializer
-    authentication_classes = (TokenAuthentication, )
+    authentication_classes = (JWTAuthentication, )
     permission_classes = (IsAuthenticated, )
 
     def destroy(self, request, product_pk=None):
@@ -98,7 +100,7 @@ class ProductDeleteView(generics.DestroyAPIView):
 
 class CartItemDeleteView(generics.DestroyAPIView):
     serializer_class = CartItemModelSerializer
-    authentication_classes = (TokenAuthentication,)
+    authentication_classes = (JWTAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
 
     def destroy(self, request, cart_item_pk=None):

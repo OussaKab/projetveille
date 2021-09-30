@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
 import {SignupComponent} from "./components/signup/signup.component";
 import {ErrorComponent} from "./components/error/error.component";
 import {HomeComponent} from "./components/home/home.component";
@@ -34,7 +34,7 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'create-listing',
+    redirectTo: 'home',
     pathMatch: 'full'
   },
   {

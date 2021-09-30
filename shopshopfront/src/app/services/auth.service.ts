@@ -2,8 +2,7 @@ import { environment } from './../../environments/environment';
 import { SignupRequest } from './../models/signup-request';
 import { HttpClient} from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import {Subscription, Observable, of} from 'rxjs';
+import {Subscription} from 'rxjs';
 import { JwtToken } from '../models/jwt-token';
 import {retry, shareReplay} from 'rxjs/operators';
 import {HttpUtilities} from './http-utilities';
@@ -26,7 +25,7 @@ export class AuthService {
       retry(2),
       shareReplay(1)
     ).subscribe({
-      next: data => this.storeToken(data.token),
+      next: data => this.storeToken(data),
       error: err => Swal.fire({ text: err.error, icon: 'error'})
     });
   }
@@ -36,7 +35,7 @@ export class AuthService {
       retry(2),
       shareReplay(1)
     ).subscribe({
-      next: value => this.storeToken(value.token),
+      next: (tokens) => this.storeToken(tokens),
       error: err => {
         if(err.hasOwnProperty('error')){
           Swal.fire({text: err.error + '!', icon: 'error'})
@@ -61,10 +60,10 @@ export class AuthService {
   public refreshToken(): Subscription {
     return this.http.post<JwtToken>(
       `${this.url}/token-refresh`,
-          JSON.stringify({token: this.getJwt()}),
+          JSON.stringify({token: this.getRefreshJwt()}),
           HttpUtilities.jsonHttpOptions)
     .subscribe({
-      next : (data:any) => this.storeToken(data.token),
+      next : data => this.storeToken(data),
       error : err =>  {
         if(err.hasOwnProperty('error')) {
           Swal.fire({text: err.error, icon: 'error'})
@@ -75,9 +74,10 @@ export class AuthService {
     });
   }
 
-  private storeToken(token: string): void {
-    localStorage.setItem(HttpUtilities.JWT_HEADER, token);
-    const token_parts = token.split(/\./);
+  private storeToken(data: {refresh: string, access: string}): void {
+    localStorage.setItem('token', data.access);
+    localStorage.setItem('refresh_token', data.refresh);
+    const token_parts = data.access.split(/\./);
     const token_decoded = JSON.parse(window.atob(token_parts[1]));
   }
 
@@ -101,5 +101,9 @@ export class AuthService {
       lastLogin: decodedToken.lastLogin,
       roles: decodedToken.roles
     }
+  }
+
+  private getRefreshJwt() {
+    return localStorage.getItem('refresh_token') || "";
   }
 }

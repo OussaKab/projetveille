@@ -8,13 +8,13 @@ class ProductModelSerializer(serializers.ModelSerializer):
         model = Product
         fields = '__all__'
 
-    def save(self, seller):
+    def save(self):
         product = Product(
             title=self.validated_data['title'],
             description=self.validated_data['description'],
             price=float(self.validated_data['price']),
             photo=self.validated_data['photo'],
-            seller=seller
+            seller=self.validated_data['seller']
         )
         product.save()
         return product
@@ -27,7 +27,6 @@ class UserModelSerializer(serializers.ModelSerializer):
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
-
     password2 = serializers.CharField(style={'input-type': 'password'}, write_only=True)
 
     class Meta:
@@ -59,3 +58,11 @@ class CartItemModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = CartItem
         fields = '__all__'
+
+    def save(self):
+        cart_item = CartItem.objects.create(
+            client=self.validated_data['client'],
+            product=self.validated_data['product']
+        )
+        cart_item.save()
+        return cart_item
