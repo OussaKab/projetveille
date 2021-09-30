@@ -1,6 +1,7 @@
-<div>
+<div class="border border-dark p-2">
   <p>{{this.title}}</p>
-  <img [src]="this.imageUrl" [alt]="this.imageAlt">
+  <img [src]="this.imageUrl" [alt]="this.title">
   <p>{{this.description}}</p>
   <p>{{this.price | currency: 'USD': 'symbol'}}</p>
+  <button type="button" class="btn btn-success" (click)="addToCart(this.product.title)">Add to cart</button>
 </div>

@@ -1,33 +1,37 @@
 <div class="container">
-  <form [formGroup]="this.form" *ngIf="this.form">
+  <form [formGroup]="this.form" *ngIf="this.form" (ngSubmit)="signup()">
     <h2>Create an account</h2>
     <div class="row mb-3">
       <div class="col">
         <label for="firstName" class="form-label">First Name</label>
-        <input type="text" class="form-control" id="firstName" placeholder="Enter a first name">
+        <input type="text" class="form-control" id="firstName" placeholder="Enter a first name" formControlName="first_name">
       </div>
       <div class="col">
         <label for="lastName" class="form-label">Last Name</label>
-        <input type="text" class="form-control" id="lastName" placeholder="Enter a last name">
+        <input type="text" class="form-control" id="lastName" placeholder="Enter a last name" formControlName="last_name">
       </div>
     </div>
     <div class="mb-3">
       <label for="username" class="form-label">Username</label>
-      <input type="text" class="form-control" id="username" placeholder="Enter a username">
+      <input type="text" class="form-control" id="username" placeholder="Enter a username" formControlName="username">
+    </div>
+    <div class="mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input type="email" class="form-control" id="email" placeholder="Enter a email" formControlName="email">
     </div>
     <div class="row mb-3">
       <div class="col">
         <label for="password" class="form-label">Password</label>
-        <input type="password" class="form-control" id="password" placeholder="Enter a password">
+        <input type="password" class="form-control" id="password" placeholder="Enter a password" formControlName="password">
       </div>
       <div class="col">
         <label for="password2" class="form-label">Password confirmation</label>
-        <input type="password" class="form-control" id="password2" placeholder="Confirm password">
+        <input type="password" class="form-control" id="password2" placeholder="Confirm password" formControlName="password2">
       </div>
     </div>
     <div class="d-flex align-items-center justify-content-end">
       <span class="form-text">Already got an account? <a routerLink="/login">Go to login page</a></span>
-      <button type="submit" class="ms-auto btn btn-primary" [disabled]="this.form.invalid">Create account</button>
+      <button type="submit" class="ms-auto btn btn-primary" [disabled]="!this.form.valid">Create account</button>
     </div>
   </form>
 </div>

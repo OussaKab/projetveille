@@ -40,9 +40,17 @@ export class SignupComponent implements OnInit, OnDestroy {
     const first_name = this.form.get('first_name')?.value as string;
     const last_name = this.form.get('last_name')?.value as string;
 
+    if(password !== password2){
+      alert('passwords do not match!');
+      return;
+    }
+
     const signupRequest: SignupRequest = {first_name,last_name,  password, password2,username,email};
-    this.sub = this.authService.signup(signupRequest);
-    this.router.navigateByUrl('/home');
+    this.sub = this.authService.signup(signupRequest).subscribe({
+      next : data => AuthService.storeToken(data),
+      error : err =>  console.error(err),
+      complete: () => this.router.navigateByUrl('/home')
+    });
   }
 
   ngOnDestroy(): void {

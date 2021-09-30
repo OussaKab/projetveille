@@ -1,0 +1,7 @@
+.bad{
+  border: 1px solid darkred;
+}
+
+.good{
+  border:1px solid forestgreen;
+}

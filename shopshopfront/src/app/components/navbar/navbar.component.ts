@@ -15,7 +15,7 @@ export class NavbarComponent implements OnInit {
   constructor(private authService: AuthService) { }
 
   ngOnInit(): void {
-    this.token = this.authService.getJwt();
+    this.token = AuthService.getJwtToken();
     this.searchForm = new FormGroup({
       search_input : new FormControl('', [Validators.required, Validators.minLength(1)])
     })

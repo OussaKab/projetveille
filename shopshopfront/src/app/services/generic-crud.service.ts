@@ -1,4 +1,3 @@
-import { Injectable } from '@angular/core';
 import { retry, shareReplay } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -10,9 +9,6 @@ const httpOptions = {
   })
 };
 
-@Injectable({
-  providedIn: 'root'
-})
 export abstract class GenericCrudService<T, ID> implements ICrud<T, ID>{
 
   constructor(private http: HttpClient, private url: string){}

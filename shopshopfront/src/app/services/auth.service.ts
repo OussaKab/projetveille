@@ -2,7 +2,7 @@ import { environment } from '../../environments/environment';
 import { SignupRequest } from '../models/signup-request';
 import { HttpClient} from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import {Subscription} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 import { JwtToken } from '../models/jwt-token';
 import {retry, shareReplay} from 'rxjs/operators';
 import {HttpUtilities} from './http-utilities';
@@ -19,72 +19,60 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
-  public login(loginCredentials: LoginRequest): Subscription{
-    return this.http.post<JwtToken>(`${this.url}/login/`, JSON.stringify(loginCredentials), HttpUtilities.jsonHttpOptions).pipe(
+  public login(loginCredentials: LoginRequest): Observable<JwtToken>{
+    return this.http.post<JwtToken>(`${this.url}/token/`, JSON.stringify(loginCredentials), HttpUtilities.jsonHttpOptions).pipe(
       retry(2),
       shareReplay(1)
-    ).subscribe({
-      next: data => AuthService.storeToken(data),
-      error: err => Swal.fire({ text: err.error, icon: 'error'})
-    });
+    );
   }
 
-  public signup(s: SignupRequest): Subscription{
+  public signup(s: SignupRequest): Observable<JwtToken>{
     return this.http.post<JwtToken>(`${this.url}/signup/`, JSON.stringify(s), HttpUtilities.jsonHttpOptions).pipe(
       retry(2),
       shareReplay(1)
-    ).subscribe({
-      next: (tokens) => AuthService.storeToken(tokens),
-      error: err => {
-        if(err.hasOwnProperty('error')){
-          Swal.fire({text: err.error + '!', icon: 'error'})
-        }
-      }
-    });
+    );
   }
 
   public isLoggedIn(): boolean{
-    const token = AuthService.getJwt();
-    return !!token && !HttpUtilities.jwtHelper.isTokenExpired(token);
+    const access_token = AuthService.getJwtToken();
+    const refresh_token = AuthService.getRefreshJwtToken();
+    return !!refresh_token && !!access_token && !HttpUtilities.jwtHelper.isTokenExpired(access_token);
   }
 
   public disconnect(): Subscription{
-    if (localStorage.getItem('token') !== undefined){
-      localStorage.removeItem('token');
-    }
+    localStorage.removeItem('token');
+    localStorage.removeItem('refresh_token');
 
     return this.http.post(`${environment.authUrl}/logout/`, HttpUtilities.jsonHttpOptions).subscribe();
   }
 
-  public refreshToken(): Subscription {
+  public refreshToken(): Observable<JwtToken> {
     return this.http.post<JwtToken>(
-      `${this.url}/token-refresh`,
-          JSON.stringify({token: AuthService.getRefreshJwt()}),
-          HttpUtilities.jsonHttpOptions)
-    .subscribe({
-      next : data => AuthService.storeToken(data),
-      error : err =>  {
-        if(err.hasOwnProperty('error')) {
-          Swal.fire({text: err.error, icon: 'error'})
-        }else{
-          console.error(JSON.stringify(err));
-        }
-      }
-    });
+      `${this.url}/token-refresh/`,
+          JSON.stringify({token: AuthService.getRefreshJwtToken()}),
+          HttpUtilities.jsonHttpOptions);
   }
 
-  private static storeToken(data: {refresh: string, access: string}): void {
+  public static storeToken(data: {refresh: string, access: string}): void {
     localStorage.setItem('token', data.access);
     localStorage.setItem('refresh_token', data.refresh);
-    // const token_parts = data.access.split(/\./);
-    // const token_decoded = JSON.parse(window.atob(token_parts[1]));
   }
 
-  public static getJwt(): string {
+  public static getJwtToken(): string {
     return localStorage.getItem('token') || "";
   }
 
-  private static getRefreshJwt() {
+  private static getRefreshJwtToken() {
     return localStorage.getItem('refresh_token') || "";
+  }
+
+  public getJwt(): any{
+    return HttpUtilities.jwtHelper.decodeToken(AuthService.getJwtToken());
+  }
+
+  getId(): number {
+    const token_decoded = this.getJwt();
+    console.log(token_decoded);
+    return token_decoded.client_id as number;
   }
 }

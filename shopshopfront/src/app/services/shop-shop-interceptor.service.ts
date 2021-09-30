@@ -13,7 +13,7 @@ export class ShopShopInterceptor implements HttpInterceptor{
     if(this.auth.isLoggedIn()){
       request = request.clone({
         setHeaders: {
-          Authorization : `${HttpUtilities.JWT_HEADER} ${this.auth.getJwt()}`
+          Authorization : `${HttpUtilities.JWT_HEADER} ${AuthService.getJwtToken()}`
         }
       })
     }

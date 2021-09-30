@@ -4,6 +4,8 @@ import {AuthService} from "../../services/auth.service";
 import {Subscription} from "rxjs";
 // @ts-ignore
 import * as Swal from "sweetalert2/dist/sweetalert2.all.js";
+import {Router} from "@angular/router";
+import {HttpUtilities} from "../../services/http-utilities";
 
 @Component({
   selector: 'app-login',
@@ -14,26 +16,32 @@ export class LoginComponent implements OnInit, OnDestroy {
   form!: FormGroup;
   private subscriptions : Subscription[] = [];
 
-  constructor(private authService: AuthService) { }
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.form = new FormGroup({
-      username: new FormControl('', [Validators.required, Validators.minLength(4)]),
-      password: new FormControl('', [Validators.required])
+      username: new FormControl('', [Validators.required, HttpUtilities.noWhitespaceValidator]),
+      password: new FormControl('', [Validators.required, HttpUtilities.noWhitespaceValidator])
     })
   }
 
   public login(): void{
     if(!this.form.valid) {
-      Swal.fire({
-        title: 'Error when login in',
-        text: 'Check if all fields are filled',
-        icon: 'warning'
-      });
+      alert('Error when logging in');
     }
+
     const username = this.form.get('username')?.value as string;
     const password = this.form.get('password')?.value as string;
-    this.subscriptions.push(this.authService.login({username, password}));
+
+    this.subscriptions.push(this.authService.login({username, password})
+      .subscribe({
+        next : data => AuthService.storeToken(data),
+        error : err =>  console.error(err),
+        complete: () => this.router.navigateByUrl('/home')
+      }));
   }
 
   ngOnDestroy(): void {

@@ -3,5 +3,6 @@ export interface Product{
   description: string;
   photo: File;
   price: number;
+  seller: number;
   sold: boolean;
 }

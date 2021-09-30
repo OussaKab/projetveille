@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {DomSanitizer} from "@angular/platform-browser";
+import {AuthService} from "../../services/auth.service";
+import {ProductService} from "../../services/product.service";
 
 @Component({
   selector: 'app-create-listing',
@@ -17,7 +19,7 @@ export class CreateListingComponent implements OnInit {
   description!: string;
   title!: string;
 
-  constructor(private domSanitizer: DomSanitizer) { }
+  constructor(private domSanitizer: DomSanitizer, private authService: AuthService, private productService: ProductService) { }
 
   ngOnInit(): void {
     this.createListingForm = new FormGroup({
@@ -37,6 +39,30 @@ export class CreateListingComponent implements OnInit {
           name: e.target.files[0].name
         };
     }
+  }
+
+  createListing(){
+    if(this.createListingForm.invalid)
+      return;
+
+    const photo = this.imageFile?.file as File;
+    const price = this.createListingForm.get('price')?.value as string;
+    const title = this.createListingForm.get('title')?.value as string;
+    const description = this.createListingForm.get('price')?.value as string;
+    const seller_id = this.authService.getId().toString();
+
+    let formData = new FormData();
+    formData.append('title', title);
+    formData.append('description', description);
+    formData.append('price', price);
+    formData.append('photo', photo);
+    formData.append('title', title);
+    formData.append('seller', seller_id);
+
+    this.productService.createProduct(formData).subscribe({
+      error: err => console.error(err),
+      complete: () => {}
+    })
   }
 
 }
