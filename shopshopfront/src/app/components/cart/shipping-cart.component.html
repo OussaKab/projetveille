@@ -1,4 +1,18 @@
-<div class="container-fluid mx-auto">
-  <!--TODO : finish design in draw.io -->
-  <button class="text-capitalize btn btn-danger rounded-pill px-2">checkout</button>
+<div class="container mx-auto">
+  <div class="d-flex justify-content-end align-items-center">
+    <button class="text-capitalize btn btn-danger rounded-pill px-2">checkout</button>
+    <button class="text-capitalize btn btn-success rounded px-2 ms-2">checkout</button>
+  </div>
+  <ul>
+    <li *ngFor="let cartItem of cartitems">
+      <div class="d-flex align-items-center justify-content-center">
+        <img [src]="cartItem?.product.link" [alt]="cartItem?.product.title">
+        <div>
+          <h2>{{cartItem.product.title}}</h2>
+          <h2>{{cartItem.product.title}}</h2>
+          <h2>{{cartItem.product.title}}</h2>
+        </div>
+      </div>
+    </li>
+  </ul>
 </div>
