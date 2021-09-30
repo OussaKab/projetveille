@@ -44,7 +44,7 @@ export class AuthService {
   }
 
   public isLoggedIn(): boolean{
-    const token = this.getJwt();
+    const token = AuthService.getJwt();
     return !!token && !HttpUtilities.jwtHelper.isTokenExpired(token);
   }
 
